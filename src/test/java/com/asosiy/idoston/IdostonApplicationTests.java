@@ -54,4 +54,20 @@ public class IdostonApplicationTests {
 
 	}
 
+	@Test
+	public void testUpcoming(){
+
+		when(ticketService.getUpcoming("False")).thenReturn(1);
+		assertEquals(1, ticketService.getUpcoming("False"));
+		assertEquals(0, ticketService.getUpcoming("True"));
+
+	}
+
+	@Test
+	public void testUpdateDescription(){
+		when(ticketService.updateDescription(10, "New Description")).thenReturn(2);
+		assertEquals(2, ticketService.updateDescription(10, "New Description"));
+		assertEquals(0, ticketService.updateDescription(10, "Some Description"));
+	}
+
 }
