@@ -1,6 +1,6 @@
 package com.asosiy.idoston.repository;
 
-import com.asosiy.idoston.entity.Ticket;
+import com.asosiy.idoston.model.Ticket;
 import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.CrudRepository;

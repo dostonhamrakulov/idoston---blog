@@ -1,6 +1,6 @@
 package com.asosiy.idoston.controller;
 
-import com.asosiy.idoston.entity.Post;
+import com.asosiy.idoston.model.Post;
 import com.asosiy.idoston.repository.PostRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
