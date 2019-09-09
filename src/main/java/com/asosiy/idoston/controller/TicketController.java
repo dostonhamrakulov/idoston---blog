@@ -10,6 +10,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.asosiy.idoston.store.Common.getCurrentDate;
+
 @RestController
 @RequestMapping("/tickets")
 public class TicketController {
@@ -17,11 +19,19 @@ public class TicketController {
     @Autowired
     private TicketRepository ticketRepository;
 
-    @PostMapping(path = "/add", consumes = "application/json")
-    public @ResponseBody ResponseEntity<Ticket> addTicket(@RequestBody Ticket ticket){
+    Ticket main_ticket;
 
-        ticketRepository.save(ticket);
-        return new ResponseEntity<>(new Ticket(), HttpStatus.CREATED);
+    @PostMapping(path = "/add", consumes = "application/json")
+    public @ResponseBody ResponseEntity<String> addTicket(@RequestBody Ticket ticket){
+
+        main_ticket = ticket;
+        main_ticket.setPubdate(getCurrentDate());
+        main_ticket = ticketRepository.save(ticket);
+        if (main_ticket != null){
+            return new ResponseEntity<>("Created", HttpStatus.CREATED);
+        } else {
+            return new ResponseEntity<>("Not created", HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(path = "/all")
@@ -35,6 +45,44 @@ public class TicketController {
             return new ResponseEntity<>(null, HttpStatus.NOT_FOUND);
         } else {
             return new ResponseEntity<>(ticketList, HttpStatus.OK);
+        }
+    }
+
+    @GetMapping(path = "/number-of-tickets")
+    public @ResponseBody ResponseEntity<Integer> numFeed(){
+        Iterable<Ticket> list = ticketRepository.findAll();
+
+        List<Ticket> ticketList = new ArrayList<>();
+        list.forEach(ticketList::add);
+        if(ticketList.size() > 0){
+            return new ResponseEntity<>(ticketList.size(), HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+        }
+
+    }
+
+    @GetMapping(path = "/upcoming")
+    public @ResponseBody ResponseEntity<Integer> upcoming(@RequestParam("passed") String passed){
+
+        int num_passed = ticketRepository.countAllByPassed(passed);
+
+        if (num_passed > 0) {
+            return new ResponseEntity<>(num_passed, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @PutMapping(path = "/update-by-description")
+    public @ResponseBody ResponseEntity<Integer> updateDescription(@RequestParam("idticket") int idticket,
+                                                                   @RequestParam("description") String description){
+        int num_updated = ticketRepository.updateDescriptionByIdticket(idticket, description);
+
+        if (num_updated > 0) {
+            return new ResponseEntity<>(num_updated, HttpStatus.OK);
+        } else {
+            return new ResponseEntity<>(0, HttpStatus.NOT_FOUND);
         }
     }
 }
