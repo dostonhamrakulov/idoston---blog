@@ -1,4 +1,4 @@
-package com.asosiy.idoston.model;
+package com.asosiy.idoston.entity;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
